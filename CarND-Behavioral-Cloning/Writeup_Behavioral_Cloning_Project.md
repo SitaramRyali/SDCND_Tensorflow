@@ -75,48 +75,53 @@ As per the NVIDIA model, the convolution layers are meant to handle feature engi
 
 The below is a model structure output from the Keras which gives more details on the shapes and the number of parameters.
 
-| Layer (type)                   |Output Shape      |Params  |Connected to     |
-|--------------------------------|------------------|-------:|-----------------|
-|lambda_1 (Lambda)               |(None, 66, 200, 3)|0       |lambda_input_1   |
-|convolution2d_1 (Convolution2D) |(None, 31, 98, 24)|1824    |lambda_1         |
-|convolution2d_2 (Convolution2D) |(None, 14, 47, 36)|21636   |convolution2d_1  |
-|convolution2d_3 (Convolution2D) |(None, 5, 22, 48) |43248   |convolution2d_2  |
-|convolution2d_4 (Convolution2D) |(None, 3, 20, 64) |27712   |convolution2d_3  |
-|convolution2d_5 (Convolution2D) |(None, 1, 18, 64) |36928   |convolution2d_4  |
-|dropout_1 (Dropout)             |(None, 1, 18, 64) |0       |convolution2d_5  |
-|flatten_1 (Flatten)             |(None, 1152)      |0       |dropout_1        |
-|dense_1 (Dense)                 |(None, 100)       |115300  |flatten_1        |
-|dense_2 (Dense)                 |(None, 50)        |5050    |dense_1          |
-|dense_3 (Dense)                 |(None, 10)        |510     |dense_2          |
-|dense_4 (Dense)                 |(None, 1)         |11      |dense_3          |
-|                                |**Total params**  |252219  |                 |
-
+Layer (type)                 Output Shape              Param #   
+=================================================================
+lambda_1 (Lambda)            (None, 160, 320, 3)       0         
+_________________________________________________________________
+cropping2d_1 (Cropping2D)    (None, 65, 320, 3)        0         
+_________________________________________________________________
+conv2d_1 (Conv2D)            (None, 31, 158, 24)       1824      
+_________________________________________________________________
+conv2d_2 (Conv2D)            (None, 14, 77, 36)        21636     
+_________________________________________________________________
+conv2d_3 (Conv2D)            (None, 5, 37, 48)         43248     
+_________________________________________________________________
+conv2d_4 (Conv2D)            (None, 3, 35, 64)         27712     
+_________________________________________________________________
+conv2d_5 (Conv2D)            (None, 1, 33, 64)         36928     
+_________________________________________________________________
+dropout_1 (Dropout)          (None, 1, 33, 64)         0         
+_________________________________________________________________
+flatten_1 (Flatten)          (None, 2112)              0         
+_________________________________________________________________
+dense_1 (Dense)              (None, 256)               540928    
+_________________________________________________________________
+dense_2 (Dense)              (None, 128)               32896     
+_________________________________________________________________
+dense_3 (Dense)              (None, 64)                8256      
+_________________________________________________________________
+dense_4 (Dense)              (None, 1)                 65        
+=================================================================
+Total params: 713,493
+Trainable params: 713,493
+Non-trainable params: 0
 
 ## Data Preprocessing
 
 ### Image Sizing
 
-- the images are cropped so that the model won’t be trained with the sky and the car front parts
-- the images are resized to 66x200 (3 YUV channels) as per NVIDIA model
-- the images are normalized (image data divided by 127.5 and subtracted 1.0).  As stated in the Model Architecture section, this is to avoid saturation and make gradients work better)
-
-
-## Model Training
+- I have cropped the images using the Cropping2D function  of the Keras which has helped to focus the training only on road than other un necessary data.
 
 ### Image Augumentation
 
-For training, I used the following augumentation technique along with Python generator to generate unlimited number of images:
+For training, I used the following augumentation technique:
 
-- Randomly choose right, left or center images.
+- Have choose all of the right, left or center images.
 - For left image, steering angle is adjusted by +0.2
 - For right image, steering angle is adjusted by -0.2
-- Randomly flip image left/right
-- Randomly translate image horizontally with steering angle adjustment (0.002 per pixel shift)
-- Randomly translate image vertically
-- Randomly added shadows
-- Randomly altering image brightness (lighter or darker)
-
-Using the left/right images is useful to train the recovery driving scenario.  The horizontal translation is useful for difficult curve handling (i.e. the one after the bridge).
+- Done flip image left/right.
+- Done translate image horizontally with steering angle adjustment (0.002 per pixel shift)
 
 
 ### Examples of Augmented Images

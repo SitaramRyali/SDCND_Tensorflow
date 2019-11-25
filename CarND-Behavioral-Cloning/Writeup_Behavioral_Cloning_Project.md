@@ -154,8 +154,9 @@ As for training,
 ## Outcome
 
 The model can drive the course without bumping into the side ways.
+attached the video file as run2.mp4 in the path.
 
-- [The Lake Track - Link](images/run2.mp4)
+- [The Lake Track - Link](run2.mp4)
 
 
 ## References
